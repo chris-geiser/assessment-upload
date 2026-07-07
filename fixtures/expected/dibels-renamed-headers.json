@@ -1,0 +1,10 @@
+{
+  "file": "dibels-renamed-headers.csv",
+  "assessmentType": "DIBELS_8",
+  "summary": {
+    "totalRows": 3,
+    "cleanRows": 3,
+    "errorRows": 0,
+    "warningRows": 0
+  }
+}

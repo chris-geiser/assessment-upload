@@ -1,0 +1,10 @@
+{
+  "file": "amira-dirty.csv",
+  "assessmentType": "AMIRA",
+  "summary": {
+    "totalRows": 9,
+    "cleanRows": 3,
+    "errorRows": 4,
+    "warningRows": 2
+  }
+}

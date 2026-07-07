@@ -1,0 +1,10 @@
+{
+  "file": "dibels-clean.csv",
+  "assessmentType": "DIBELS_8",
+  "summary": {
+    "totalRows": 5,
+    "cleanRows": 5,
+    "errorRows": 0,
+    "warningRows": 0
+  }
+}

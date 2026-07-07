@@ -1,0 +1,10 @@
+{
+  "file": "iready-clean.csv",
+  "assessmentType": "IREADY",
+  "summary": {
+    "totalRows": 4,
+    "cleanRows": 4,
+    "errorRows": 0,
+    "warningRows": 0
+  }
+}

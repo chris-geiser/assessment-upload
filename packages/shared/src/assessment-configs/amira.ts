@@ -1,0 +1,45 @@
+import type { AssessmentConfig } from "../types.js";
+
+// Amira Learning (Istation / HMH). ORF (WCPM) ≤ 300, ISIP ≤ 300, Accuracy ≤ 100%.
+export const amira: AssessmentConfig = {
+  id: "AMIRA",
+  displayName: "Amira Learning",
+  vendor: "Istation / HMH",
+  canonicalFields: [
+    { name: "student_id", label: "Student ID", type: "string", category: "student", required: true },
+    { name: "student_first_name", label: "First Name", type: "string", category: "student", required: true },
+    { name: "student_last_name", label: "Last Name", type: "string", category: "student", required: true },
+    { name: "school_name", label: "School", type: "string", category: "student", required: true },
+    { name: "grade", label: "Grade", type: "grade", category: "student", required: true },
+    { name: "oral_reading_fluency", label: "Oral Reading Fluency (WCPM)", type: "number", category: "measure", min: 0, max: 300, measureType: "fluency" },
+    { name: "accuracy", label: "Accuracy", type: "number", category: "measure", min: 0, max: 100, measureType: "accuracy" },
+    { name: "comprehension", label: "Comprehension", type: "number", category: "measure", min: 0, max: 100, measureType: "comprehension" },
+    { name: "phonics_screener", label: "Phonics Screener", type: "number", category: "measure", min: 0, max: 100, measureType: "raw" },
+    { name: "vocabulary_score", label: "Vocabulary Score", type: "number", category: "measure", min: 0, max: 100, measureType: "raw" },
+    { name: "listening_comprehension", label: "Listening Comprehension", type: "number", category: "measure", min: 0, max: 100, measureType: "comprehension" },
+    { name: "isip_reading", label: "ISIP Reading Score", type: "number", category: "measure", min: 0, max: 300, measureType: "scaled" },
+    { name: "overall_ability", label: "Overall Ability", type: "number", category: "measure", min: 0, max: 300, measureType: "scaled" },
+  ],
+  synonymMap: {
+    "student id": "student_id", "sis id": "student_id", "lasid": "student_id", "id": "student_id",
+    "first name": "student_first_name", "fname": "student_first_name", "student first name": "student_first_name",
+    "last name": "student_last_name", "lname": "student_last_name", "student last name": "student_last_name",
+    "school name": "school_name", "school": "school_name",
+    "grade level": "grade", "grade": "grade",
+    "oral reading fluency": "oral_reading_fluency", "orf": "oral_reading_fluency", "wcpm": "oral_reading_fluency", "words correct per minute": "oral_reading_fluency",
+    "accuracy": "accuracy", "reading accuracy": "accuracy",
+    "comprehension": "comprehension", "reading comprehension": "comprehension",
+    "phonics screener": "phonics_screener", "phonics": "phonics_screener",
+    "vocabulary score": "vocabulary_score", "vocabulary": "vocabulary_score",
+    "listening comprehension": "listening_comprehension",
+    "isip reading": "isip_reading", "isip reading score": "isip_reading", "isip er": "isip_reading",
+    "overall ability": "overall_ability", "ability score": "overall_ability",
+  },
+  requiredByGrade: {},
+  performanceLevels: {
+    "Tier 1": "Above Benchmark",
+    "Tier 2": "Near Benchmark",
+    "Tier 3": "Below Benchmark",
+  },
+  crossFieldChecks: [],
+};

@@ -1,0 +1,46 @@
+import type { AssessmentConfig } from "../types.js";
+
+// i-Ready Diagnostic (Curriculum Associates). All domain scores ≤ 800.
+export const iready: AssessmentConfig = {
+  id: "IREADY",
+  displayName: "i-Ready Diagnostic",
+  vendor: "Curriculum Associates",
+  canonicalFields: [
+    { name: "student_id", label: "Student ID", type: "string", category: "student", required: true },
+    { name: "student_first_name", label: "First Name", type: "string", category: "student", required: true },
+    { name: "student_last_name", label: "Last Name", type: "string", category: "student", required: true },
+    { name: "school_name", label: "School", type: "string", category: "student", required: true },
+    { name: "grade", label: "Grade", type: "grade", category: "student", required: true },
+    { name: "overall_scale_score", label: "Overall Scale Score", type: "number", category: "measure", min: 0, max: 800, measureType: "scaled" },
+    { name: "phonological_awareness", label: "Phonological Awareness", type: "number", category: "measure", min: 0, max: 800, measureType: "scaled" },
+    { name: "phonics", label: "Phonics", type: "number", category: "measure", min: 0, max: 800, measureType: "scaled" },
+    { name: "high_frequency_words", label: "High-Frequency Words", type: "number", category: "measure", min: 0, max: 800, measureType: "scaled" },
+    { name: "vocabulary", label: "Vocabulary", type: "number", category: "measure", min: 0, max: 800, measureType: "scaled" },
+    { name: "reading_comprehension", label: "Reading Comprehension", type: "number", category: "measure", min: 0, max: 800, measureType: "scaled" },
+  ],
+  synonymMap: {
+    "student id": "student_id", "sis id": "student_id", "lasid": "student_id", "id": "student_id",
+    "first name": "student_first_name", "fname": "student_first_name",
+    "last name": "student_last_name", "lname": "student_last_name",
+    "school name": "school_name", "school": "school_name",
+    "grade level": "grade", "grade": "grade",
+    "overall scale score": "overall_scale_score", "scale score": "overall_scale_score", "overall ss": "overall_scale_score",
+    "phonological awareness": "phonological_awareness", "pa": "phonological_awareness",
+    "phonics": "phonics",
+    "high-frequency words": "high_frequency_words", "high frequency words": "high_frequency_words", "hfw": "high_frequency_words",
+    "vocabulary": "vocabulary", "vocab": "vocabulary",
+    "reading comprehension": "reading_comprehension", "comprehension": "reading_comprehension",
+  },
+  requiredByGrade: {},
+  performanceLevels: {
+    "On Grade Level": "Above Benchmark",
+    "On/Above Grade Level": "Above Benchmark",
+    "Above Grade Level": "Above Benchmark",
+    "One Grade Level Below": "Near Benchmark",
+    "One Below": "Near Benchmark",
+    "Two or More Grade Levels Below": "Below Benchmark",
+    "Two+ Below": "Below Benchmark",
+    "Three or More Grade Levels Below": "Below Benchmark",
+  },
+  crossFieldChecks: [],
+};

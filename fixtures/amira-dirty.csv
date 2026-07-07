@@ -1,0 +1,10 @@
+Student ID,First Name,Last Name,School,Grade,Oral Reading Fluency,Accuracy,Comprehension,Phonics Screener,ISIP Reading,Overall Ability
+D1,Ada,Lovelace,Lincoln Elementary,1,120,95,80,70,180,190
+D2,Grace,Hopper,Lincoln Elementary,1,120,95,80,70,180,190
+D3,Alan,Turing,Lincoln Elementary,1,120,95,80,70,180,190
+,Missing,Id,Lincoln Elementary,1,120,95,80,70,180,190
+D5,Over,Max,Lincoln Elementary,1,500,95,80,70,180,190
+D6,Neg,Score,Lincoln Elementary,1,120,-5,80,70,180,190
+D7,Not,Numeric,Lincoln Elementary,1,120,95,n/a,70,180,190
+D8,77,Numeric-Name,Lincoln Elementary,1,120,95,80,70,180,190
+,,,,,,,,,,

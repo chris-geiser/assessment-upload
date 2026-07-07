@@ -1,0 +1,10 @@
+Student SIS ID,First Name,Last Name,School,Grade,Letter Sounds,Sight Words,Decodable Words,Passage Reading,Passage Retell
+D1,Ada,Lovelace,Lincoln Elementary,1,24,40,35,6,9
+D2,Grace,Hopper,Lincoln Elementary,1,24,40,35,6,9
+D3,Alan,Turing,Lincoln Elementary,1,24,40,35,6,9
+,Missing,Id,Lincoln Elementary,1,24,40,35,6,9
+D5,Over,Max,Lincoln Elementary,1,40,40,35,6,9
+D6,Neg,Score,Lincoln Elementary,1,24,-2,35,6,9
+D7,Not,Numeric,Lincoln Elementary,1,24,40,35,x,9
+D8,77,Numeric-Name,Lincoln Elementary,1,24,40,35,6,9
+,,,,,,,,,

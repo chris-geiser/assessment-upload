@@ -5,6 +5,7 @@ export default defineConfig({
     globals: true,
     environment: "node",
     include: ["src/**/*.{test,spec}.ts"],
+    setupFiles: ["./src/test/db-setup.ts"],
     // DB-backed suites must not run concurrently against the same test database.
     fileParallelism: false,
     env: {

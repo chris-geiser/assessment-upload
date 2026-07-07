@@ -1,0 +1,10 @@
+Student ID,First Name,Last Name,School,Grade,Overall Scale Score,Phonological Awareness,Phonics,High-Frequency Words,Vocabulary,Reading Comprehension
+D1,Ada,Lovelace,Lincoln Elementary,1,540,520,530,510,545,500
+D2,Grace,Hopper,Lincoln Elementary,1,540,520,530,510,545,500
+D3,Alan,Turing,Lincoln Elementary,1,540,520,530,510,545,500
+,Missing,Id,Lincoln Elementary,1,540,520,530,510,545,500
+D5,Over,Max,Lincoln Elementary,1,900,520,530,510,545,500
+D6,Neg,Score,Lincoln Elementary,1,540,520,-3,510,545,500
+D7,Not,Numeric,Lincoln Elementary,1,540,520,530,510,xyz,500
+D8,77,Numeric-Name,Lincoln Elementary,1,540,520,530,510,545,500
+,,,,,,,,,,

@@ -1,0 +1,16 @@
+Student ID,First Name,Last Name,School,Grade,LNF,PSF,NWF-CLS,NWF-WRC,WRF,ORF,ORF-Accuracy,MAZE,ORF Words Attempted
+2001,Ada,Lovelace,Lincoln Elementary,1,40,35,30,12,25,50,95,,
+2002,Grace,Hopper,Lincoln Elementary,1,40,35,30,12,25,50,95,,
+2003,Alan,Turing,Lincoln Elementary,1,40,35,30,12,25,50,95,,
+2004,Katherine,Johnson,Lincoln Elementary,1,40,35,30,12,25,50,95,,
+2005,Dorothy,Vaughan,Lincoln Elementary,1,40,35,30,12,25,50,95,,
+,Missing,Id,Lincoln Elementary,1,40,35,30,12,25,50,95,,
+2007,Over,Max,Lincoln Elementary,1,40,35,30,12,25,412,95,,
+2008,Neg,Score,Lincoln Elementary,1,-5,35,30,12,25,50,95,,
+2009,Not,Numeric,Lincoln Elementary,1,40,abc,30,12,25,50,95,,
+2010,Cls,Over,Lincoln Elementary,1,40,35,999,12,25,50,95,,
+2011,Cross,Field,Lincoln Elementary,1,40,35,30,12,25,50,99,,60
+2012,404,Numeric-Name,Lincoln Elementary,1,40,35,30,12,25,50,95,,
+,,,,,,,,,,,,,
+2014,Missing,OrfAcc,Lincoln Elementary,1,40,35,30,12,25,50,,,
+2015,Maze,Unexpected,Lincoln Elementary,1,40,35,30,12,25,50,95,8,

@@ -1,0 +1,10 @@
+{
+  "file": "vallss-dirty.csv",
+  "assessmentType": "VALLSS",
+  "summary": {
+    "totalRows": 9,
+    "cleanRows": 3,
+    "errorRows": 4,
+    "warningRows": 2
+  }
+}

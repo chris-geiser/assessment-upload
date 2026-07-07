@@ -1,0 +1,10 @@
+Student ID,First Name,Last Name,School,Grade,Scaled Score,Unified Score,Percentile Rank,Alphabetic Decoding,Structural Analysis,Sentence-Level Comprehension
+D1,Ada,Lovelace,Lincoln Elementary,1,850,860,55,620,610,600
+D2,Grace,Hopper,Lincoln Elementary,1,850,860,55,620,610,600
+D3,Alan,Turing,Lincoln Elementary,1,850,860,55,620,610,600
+,Missing,Id,Lincoln Elementary,1,850,860,55,620,610,600
+D5,Over,Max,Lincoln Elementary,1,1500,860,55,620,610,600
+D6,Neg,Score,Lincoln Elementary,1,850,-10,55,620,610,600
+D7,Not,Numeric,Lincoln Elementary,1,850,860,high,620,610,600
+D8,77,Numeric-Name,Lincoln Elementary,1,850,860,55,620,610,600
+,,,,,,,,,,

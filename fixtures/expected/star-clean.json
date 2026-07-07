@@ -1,0 +1,10 @@
+{
+  "file": "star-clean.csv",
+  "assessmentType": "STAR",
+  "summary": {
+    "totalRows": 4,
+    "cleanRows": 4,
+    "errorRows": 0,
+    "warningRows": 0
+  }
+}
