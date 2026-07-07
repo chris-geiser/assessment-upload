@@ -3,6 +3,7 @@ import cors from "@fastify/cors";
 import multipart from "@fastify/multipart";
 import { healthRoutes } from "./routes/health.js";
 import { sessionRoutes } from "./routes/session.js";
+import { uploadRoutes } from "./routes/uploads.js";
 import { registerAuth } from "./plugins/auth.js";
 import { MockAuthProvider, type AuthProvider } from "./adapters/auth-provider.js";
 import { LocalFsStorage, type StorageAdapter } from "./adapters/storage-adapter.js";
@@ -41,6 +42,7 @@ export async function buildServer(
 
   await app.register(healthRoutes, { prefix: "/api" });
   await app.register(sessionRoutes, { prefix: "/api" });
+  await app.register(uploadRoutes, { prefix: "/api" });
 
   return app;
 }
