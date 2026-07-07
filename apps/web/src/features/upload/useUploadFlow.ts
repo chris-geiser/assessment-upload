@@ -1,5 +1,15 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { detectAssessmentType, type DetectionResult, type SourceRow } from "@assessment/shared";
+import {
+  detectAssessmentType,
+  getAssessmentConfig,
+  mapColumns,
+  toColumnMapping,
+  unmappedRequiredFields,
+  type ColumnMapping,
+  type DetectionResult,
+  type MappingResult,
+  type SourceRow,
+} from "@assessment/shared";
 import { apiPostForm } from "../../lib/api.js";
 import { parseFile, type ParsedFile } from "../../lib/parse-file.js";
 import type { Step } from "../../kit/index.js";
@@ -37,6 +47,7 @@ interface PersistedState {
   uploadId: string | null;
   preview: PreviewData | null;
   detection: DetectionResult | null;
+  overrides: Record<string, string>;
 }
 
 const STORAGE_KEY = "assessment-upload-flow";
@@ -78,6 +89,16 @@ export interface UploadFlow {
   removeFile: () => void;
   canContinueFromUpload: boolean;
   continueFromUpload: () => Promise<void>;
+  // Mapping (US2)
+  mappingResult: MappingResult | null;
+  effectiveMapping: ColumnMapping;
+  overrides: Record<string, string>;
+  setFieldMapping: (field: string, sourceColumn: string) => void;
+  resetMapping: () => void;
+  unmappedRequired: string[];
+  canContinueFromMap: boolean;
+  continueFromMap: () => void;
+  goBack: () => void;
   goToStage: (stage: Stage) => void;
   reset: () => void;
 }
@@ -94,18 +115,57 @@ export function useUploadFlow(opts: { schoolId?: string } = {}): UploadFlow {
   const [uploadId, setUploadId] = useState<string | null>(persisted?.uploadId ?? null);
   const [duplicate, setDuplicate] = useState<DuplicateMatch | null>(null);
   const [sheetPrompt, setSheetPrompt] = useState<{ file: File; sheetNames: string[] } | null>(null);
+  const [overrides, setOverrides] = useState<Record<string, string>>(persisted?.overrides ?? {});
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
   // Persist the serializable slice so a reload resumes at the same stage (FR-024).
   useEffect(() => {
-    const snapshot: PersistedState = { stage, period, assessmentType, uploadId, preview, detection };
+    const snapshot: PersistedState = { stage, period, assessmentType, uploadId, preview, detection, overrides };
     try {
       sessionStorage.setItem(STORAGE_KEY, JSON.stringify(snapshot));
     } catch {
       /* storage unavailable; in-memory only */
     }
-  }, [stage, period, assessmentType, uploadId, preview, detection]);
+  }, [stage, period, assessmentType, uploadId, preview, detection, overrides]);
+
+  // Auto-mapping (recomputed when the type or file changes); overrides layer on top.
+  const config = assessmentType ? (getAssessmentConfig(assessmentType) ?? null) : null;
+  const mappingResult = useMemo<MappingResult | null>(() => {
+    if (!config || !preview) return null;
+    return mapColumns(preview.headers, config, preview.sampleRows);
+  }, [config, preview]);
+
+  const effectiveMapping = useMemo<ColumnMapping>(() => {
+    const base = mappingResult ? toColumnMapping(mappingResult) : {};
+    return { ...base, ...overrides };
+  }, [mappingResult, overrides]);
+
+  const unmappedRequired = useMemo(
+    () => (config ? unmappedRequiredFields(config, effectiveMapping) : []),
+    [config, effectiveMapping],
+  );
+
+  const setFieldMapping = useCallback((field: string, sourceColumn: string) => {
+    setOverrides((prev) => ({ ...prev, [field]: sourceColumn }));
+  }, []);
+
+  const resetMapping = useCallback(() => setOverrides({}), []);
+
+  const canContinueFromMap = config != null && unmappedRequired.length === 0;
+
+  const continueFromMap = useCallback(() => {
+    if (!config) return;
+    if (unmappedRequired.length > 0) {
+      const labels = unmappedRequired
+        .map((f) => config.canonicalFields.find((c) => c.name === f)?.label ?? f)
+        .join(", ");
+      setError(`Map these required fields before continuing: ${labels}.`);
+      return;
+    }
+    setError(null);
+    setStage("validate");
+  }, [config, unmappedRequired]);
 
   const applyParsed = useCallback((parsed: ParsedFile, selectedFile: File) => {
     const det = detectAssessmentType(parsed.headers);
@@ -172,6 +232,7 @@ export function useUploadFlow(opts: { schoolId?: string } = {}): UploadFlow {
     setUploadId(null);
     setDuplicate(null);
     setSheetPrompt(null);
+    setOverrides({});
     setError(null);
   }, []);
 
@@ -217,8 +278,17 @@ export function useUploadFlow(opts: { schoolId?: string } = {}): UploadFlow {
 
   const goToStage = useCallback((next: Stage) => setStage(next), []);
 
+  const goBack = useCallback(() => {
+    setError(null);
+    setStage((s) => {
+      const idx = stageIndex(s);
+      return idx > 0 ? UPLOAD_STEPS[idx - 1].key as Stage : s;
+    });
+  }, []);
+
   const reset = useCallback(() => {
     removeFile();
+    setOverrides({});
     setPeriodState(null);
     setStage("upload");
     try {
@@ -249,6 +319,15 @@ export function useUploadFlow(opts: { schoolId?: string } = {}): UploadFlow {
     removeFile,
     canContinueFromUpload,
     continueFromUpload,
+    mappingResult,
+    effectiveMapping,
+    overrides,
+    setFieldMapping,
+    resetMapping,
+    unmappedRequired,
+    canContinueFromMap,
+    continueFromMap,
+    goBack,
     goToStage,
     reset,
   };

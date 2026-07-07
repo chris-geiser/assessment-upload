@@ -2,9 +2,11 @@ import { useState } from "react";
 import { Modal, Select, Stepper } from "../kit/index.js";
 import { RoleSwitcher } from "../auth/RoleSwitcher.js";
 import { useSession } from "../auth/SessionContext.js";
+import { getAssessmentConfig } from "@assessment/shared";
 import { UploadZone } from "../features/upload/UploadZone.js";
 import { PeriodSelector } from "../features/upload/PeriodSelector.js";
 import { FilePreview } from "../features/upload/FilePreview.js";
+import { ColumnMappingForm } from "../features/upload/ColumnMappingForm.js";
 import { UPLOAD_STEPS, useUploadFlow } from "../features/upload/useUploadFlow.js";
 
 export function AssessmentDataPage() {
@@ -71,7 +73,23 @@ export function AssessmentDataPage() {
         </div>
       )}
 
-      {flow.stage !== "upload" && (
+      {flow.stage === "map" && flow.preview && flow.assessmentType && getAssessmentConfig(flow.assessmentType) && (
+        <ColumnMappingForm
+          config={getAssessmentConfig(flow.assessmentType)!}
+          headers={flow.preview.headers}
+          mappingResult={flow.mappingResult}
+          effectiveMapping={flow.effectiveMapping}
+          unmappedRequired={flow.unmappedRequired}
+          onChange={flow.setFieldMapping}
+          onReset={flow.resetMapping}
+          onContinue={flow.continueFromMap}
+          onBack={flow.goBack}
+          canContinue={flow.canContinueFromMap}
+          error={flow.error}
+        />
+      )}
+
+      {(flow.stage === "validate" || flow.stage === "submit") && (
         <div className="rounded-lg border border-gray-200 bg-white p-6 text-gray-600">
           The <strong>{UPLOAD_STEPS[flow.stageIdx].label}</strong> step is implemented in a later phase.
         </div>
