@@ -3,12 +3,17 @@ import {
   detectAssessmentType,
   getAssessmentConfig,
   mapColumns,
+  NOT_PRESENT,
   toColumnMapping,
   unmappedRequiredFields,
+  validateRows,
+  validateSingleRow,
   type ColumnMapping,
   type DetectionResult,
   type MappingResult,
   type SourceRow,
+  type ValidationIssue,
+  type ValidationSummary,
 } from "@assessment/shared";
 import { apiPostForm } from "../../lib/api.js";
 import { parseFile, type ParsedFile } from "../../lib/parse-file.js";
@@ -98,9 +103,34 @@ export interface UploadFlow {
   unmappedRequired: string[];
   canContinueFromMap: boolean;
   continueFromMap: () => void;
+  // Validation (US3)
+  validationSummary: ValidationSummary | null;
+  issuesForCell: (rowIndex: number, field: string) => ValidationIssue | undefined;
+  rowSeverity: (rowIndex: number) => "error" | "warning" | null;
+  allIssues: ValidationIssue[];
+  mappedFields: string[];
+  cellValueFor: (rowIndex: number, field: string) => string;
+  editCell: (rowIndex: number, field: string, value: string) => void;
   goBack: () => void;
   goToStage: (stage: Stage) => void;
   reset: () => void;
+}
+
+interface ValidationState {
+  issuesByRow: Record<number, ValidationIssue[]>;
+  summary: ValidationSummary;
+}
+
+function summarize(total: number, issuesByRow: Record<number, ValidationIssue[]>): ValidationSummary {
+  let errorRows = 0;
+  let warningRows = 0;
+  for (const key of Object.keys(issuesByRow)) {
+    const arr = issuesByRow[Number(key)];
+    if (!arr?.length) continue;
+    if (arr.some((i) => i.severity === "error")) errorRows += 1;
+    else warningRows += 1;
+  }
+  return { totalRows: total, errorRows, warningRows, cleanRows: total - errorRows - warningRows };
 }
 
 export function useUploadFlow(opts: { schoolId?: string } = {}): UploadFlow {
@@ -154,6 +184,18 @@ export function useUploadFlow(opts: { schoolId?: string } = {}): UploadFlow {
 
   const canContinueFromMap = config != null && unmappedRequired.length === 0;
 
+  const [validation, setValidation] = useState<ValidationState | null>(null);
+
+  const mappedFields = useMemo(() => {
+    if (!config) return [];
+    return config.canonicalFields
+      .filter((f) => {
+        const src = effectiveMapping[f.name];
+        return src && src !== NOT_PRESENT;
+      })
+      .map((f) => f.name);
+  }, [config, effectiveMapping]);
+
   const continueFromMap = useCallback(() => {
     if (!config) return;
     if (unmappedRequired.length > 0) {
@@ -164,8 +206,68 @@ export function useUploadFlow(opts: { schoolId?: string } = {}): UploadFlow {
       return;
     }
     setError(null);
+    // Full validation of every row (client-side, for speed — P8 server re-validates).
+    const result = validateRows(rows, effectiveMapping, config);
+    const byRow: Record<number, ValidationIssue[]> = {};
+    for (const issue of result.issues) {
+      (byRow[issue.rowIndex] ??= []).push(issue);
+    }
+    setValidation({ issuesByRow: byRow, summary: result.summary });
     setStage("validate");
-  }, [config, unmappedRequired]);
+  }, [config, unmappedRequired, rows, effectiveMapping]);
+
+  const cellValueFor = useCallback(
+    (rowIndex: number, field: string) => {
+      const src = effectiveMapping[field];
+      if (!src || src === NOT_PRESENT) return "";
+      return rows[rowIndex]?.[src] ?? "";
+    },
+    [rows, effectiveMapping],
+  );
+
+  // Inline edit: patch one cell, re-validate only that row (≤1s), update counts.
+  const editCell = useCallback(
+    (rowIndex: number, field: string, value: string) => {
+      if (!config) return;
+      const src = effectiveMapping[field];
+      if (!src || src === NOT_PRESENT) return;
+      setRows((prev) => {
+        const next = prev.slice();
+        next[rowIndex] = { ...next[rowIndex], [src]: value };
+        const rowIssues = validateSingleRow(next[rowIndex], rowIndex, effectiveMapping, config);
+        setValidation((prevVal) => {
+          const byRow = { ...(prevVal?.issuesByRow ?? {}) };
+          if (rowIssues.length) byRow[rowIndex] = rowIssues;
+          else delete byRow[rowIndex];
+          return { issuesByRow: byRow, summary: summarize(next.length, byRow) };
+        });
+        return next;
+      });
+    },
+    [config, effectiveMapping],
+  );
+
+  const issuesForCell = useCallback(
+    (rowIndex: number, field: string): ValidationIssue | undefined =>
+      validation?.issuesByRow[rowIndex]?.find((i) => i.field === field),
+    [validation],
+  );
+
+  const rowSeverity = useCallback(
+    (rowIndex: number): "error" | "warning" | null => {
+      const arr = validation?.issuesByRow[rowIndex];
+      if (!arr?.length) return null;
+      return arr.some((i) => i.severity === "error") ? "error" : "warning";
+    },
+    [validation],
+  );
+
+  const allIssues = useMemo(() => {
+    if (!validation) return [];
+    return Object.values(validation.issuesByRow)
+      .flat()
+      .sort((a, b) => a.rowIndex - b.rowIndex || a.field.localeCompare(b.field));
+  }, [validation]);
 
   const applyParsed = useCallback((parsed: ParsedFile, selectedFile: File) => {
     const det = detectAssessmentType(parsed.headers);
@@ -233,6 +335,7 @@ export function useUploadFlow(opts: { schoolId?: string } = {}): UploadFlow {
     setDuplicate(null);
     setSheetPrompt(null);
     setOverrides({});
+    setValidation(null);
     setError(null);
   }, []);
 
@@ -327,6 +430,13 @@ export function useUploadFlow(opts: { schoolId?: string } = {}): UploadFlow {
     unmappedRequired,
     canContinueFromMap,
     continueFromMap,
+    validationSummary: validation?.summary ?? null,
+    issuesForCell,
+    rowSeverity,
+    allIssues,
+    mappedFields,
+    cellValueFor,
+    editCell,
     goBack,
     goToStage,
     reset,

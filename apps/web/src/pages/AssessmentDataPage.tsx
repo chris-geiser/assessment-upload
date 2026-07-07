@@ -7,6 +7,7 @@ import { UploadZone } from "../features/upload/UploadZone.js";
 import { PeriodSelector } from "../features/upload/PeriodSelector.js";
 import { FilePreview } from "../features/upload/FilePreview.js";
 import { ColumnMappingForm } from "../features/upload/ColumnMappingForm.js";
+import { ValidationGrid } from "../features/upload/ValidationGrid.js";
 import { UPLOAD_STEPS, useUploadFlow } from "../features/upload/useUploadFlow.js";
 
 export function AssessmentDataPage() {
@@ -89,7 +90,22 @@ export function AssessmentDataPage() {
         />
       )}
 
-      {(flow.stage === "validate" || flow.stage === "submit") && (
+      {flow.stage === "validate" && flow.assessmentType && getAssessmentConfig(flow.assessmentType) && (
+        <ValidationGrid
+          config={getAssessmentConfig(flow.assessmentType)!}
+          mappedFields={flow.mappedFields}
+          rowCount={flow.rows.length}
+          summary={flow.validationSummary}
+          allIssues={flow.allIssues}
+          cellValueFor={flow.cellValueFor}
+          editCell={flow.editCell}
+          issuesForCell={flow.issuesForCell}
+          rowSeverity={flow.rowSeverity}
+          onBack={flow.goBack}
+        />
+      )}
+
+      {flow.stage === "submit" && (
         <div className="rounded-lg border border-gray-200 bg-white p-6 text-gray-600">
           The <strong>{UPLOAD_STEPS[flow.stageIdx].label}</strong> step is implemented in a later phase.
         </div>
