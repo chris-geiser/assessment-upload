@@ -42,7 +42,7 @@ async function goToMapStage() {
       <App />
     </SessionProvider>,
   );
-  await screen.findByRole("heading", { name: /assessment data/i });
+  await screen.findByRole("heading", { name: /upload a file/i });
   await userEvent.selectOptions(screen.getByLabelText("Benchmark period"), "MOY");
   await userEvent.upload(fileInput(), new File([RENAMED_CSV], "renamed.csv", { type: "text/csv" }));
   await userEvent.click(await screen.findByRole("button", { name: /Continue to mapping/i }));

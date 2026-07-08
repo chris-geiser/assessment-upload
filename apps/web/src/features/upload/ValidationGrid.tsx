@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import type { AssessmentConfig, ValidationIssue, ValidationSummary } from "@assessment/shared";
 import { Btn, DataGrid, SecondaryBtn, SummaryCard, cx, type DataGridColumn } from "../../kit/index.js";
+import { focusRing } from "../../kit/cx.js";
 import { downloadValidationReport } from "./report.js";
 
 type Filter = "all" | "issues";
@@ -33,6 +34,7 @@ export function ValidationGrid({
   actionBar?: React.ReactNode;
 }) {
   const [filter, setFilter] = useState<Filter>("all");
+  const [legendOpen, setLegendOpen] = useState(false);
 
   const columns: DataGridColumn[] = useMemo(
     () =>
@@ -64,6 +66,33 @@ export function ValidationGrid({
         <SummaryCard label="Clean" value={summary?.cleanRows ?? 0} tone="success" />
         {submittedCount !== undefined && (
           <SummaryCard label="Submitted" value={submittedCount} tone="processing" />
+        )}
+      </div>
+
+      <div>
+        <button
+          type="button"
+          aria-expanded={legendOpen}
+          onClick={() => setLegendOpen((v) => !v)}
+          className={cx("text-sm font-medium text-brand underline underline-offset-2", focusRing)}
+        >
+          {legendOpen ? "Hide legend" : "Open legend"}
+        </button>
+        {legendOpen && (
+          <div className="mt-2 flex flex-wrap gap-4 rounded-md border border-neutral-200 bg-white p-3 text-sm">
+            <span className="flex items-center gap-2">
+              <span aria-hidden="true" className="inline-block h-4 w-4 rounded border-2 border-red-400 bg-red-50" />
+              Error — must be fixed before this row can submit
+            </span>
+            <span className="flex items-center gap-2">
+              <span aria-hidden="true" className="inline-block h-4 w-4 rounded border-2 border-yellow-400 bg-yellow-50" />
+              Warning — review, but can still submit
+            </span>
+            <span className="flex items-center gap-2">
+              <span aria-hidden="true" className="inline-block h-4 w-4 rounded border border-neutral-300 bg-white" />
+              Clean — no issues
+            </span>
+          </div>
         )}
       </div>
 

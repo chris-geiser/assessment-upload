@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Modal, Select, Stepper } from "../kit/index.js";
 import { RoleSwitcher } from "../auth/RoleSwitcher.js";
+import { Sidebar } from "../layout/Sidebar.js";
 import { useSession } from "../auth/SessionContext.js";
 import { getAssessmentConfig } from "@assessment/shared";
 import { UploadZone } from "../features/upload/UploadZone.js";
@@ -8,7 +9,16 @@ import { PeriodSelector } from "../features/upload/PeriodSelector.js";
 import { FilePreview } from "../features/upload/FilePreview.js";
 import { ColumnMappingForm } from "../features/upload/ColumnMappingForm.js";
 import { ValidationGrid } from "../features/upload/ValidationGrid.js";
-import { UPLOAD_STEPS, useUploadFlow } from "../features/upload/useUploadFlow.js";
+import { UPLOAD_STEPS, useUploadFlow, type Stage } from "../features/upload/useUploadFlow.js";
+
+// Per-step page heading, mirroring the portal (h1 = the current step, e.g.
+// "Complete Student Information").
+const STEP_META: Record<Stage, { title: string; subtitle: string }> = {
+  upload: { title: "Upload a file", subtitle: "Choose a benchmark period and upload your assessment file." },
+  map: { title: "Map columns", subtitle: "Match your file's columns to the assessment fields." },
+  validate: { title: "Review and fix", subtitle: "Resolve flagged rows before submitting." },
+  submit: { title: "Submit", subtitle: "Send your validated rows to the warehouse." },
+};
 
 export function AssessmentDataPage() {
   const { session, loading } = useSession();
@@ -20,21 +30,31 @@ export function AssessmentDataPage() {
   if (loading) return <p className="p-8 text-gray-600">Loading…</p>;
   if (!session) return <p className="p-8 text-gray-600">Sign in to upload assessment data.</p>;
 
+  const meta = STEP_META[flow.stage];
+
   return (
-    <main className="mx-auto max-w-5xl p-6">
-      <header className="mb-6">
-        <h1 className="text-2xl font-semibold text-brand">Assessment Data</h1>
-        <p className="mt-1 text-gray-600">Upload, map, validate, and submit assessment files.</p>
-      </header>
+    <>
+      {/* Prototype scaffolding banner: full-width strip above the whole shell. */}
+      <RoleSwitcher />
 
-      <div className="mb-6">
-        <RoleSwitcher />
-      </div>
+      <div className="flex min-h-screen bg-neutral-50">
+        <Sidebar />
+        <main className="flex-1 p-6 lg:p-8">
+          <div className="mx-auto max-w-5xl">
+            <header className="mb-6">
+              <p className="text-xs font-semibold uppercase tracking-wide text-neutral-500">Assessment Data</p>
+              <h1 className="text-2xl font-semibold text-brand-800">{meta.title}</h1>
+              <p className="mt-1 text-neutral-600">{meta.subtitle}</p>
+            </header>
 
-      {/* Adequate spacing below the header before the stepper (US1 scenario 7). */}
-      <div className="mb-8">
-        <Stepper steps={UPLOAD_STEPS} currentIndex={flow.stageIdx} />
-      </div>
+            {/* Adequate spacing below the header before the stepper (US1 scenario 7). */}
+            <div className="mb-8">
+              <Stepper
+                steps={UPLOAD_STEPS}
+                currentIndex={flow.stageIdx}
+                onStepClick={(i) => flow.goToStage(UPLOAD_STEPS[i].key as Stage)}
+              />
+            </div>
 
       {session.schools.length > 1 && (
         <div className="mb-6 max-w-xs">
@@ -130,6 +150,9 @@ export function AssessmentDataPage() {
           ))}
         </div>
       </Modal>
-    </main>
+          </div>
+        </main>
+      </div>
+    </>
   );
 }

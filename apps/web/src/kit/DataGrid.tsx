@@ -68,10 +68,14 @@ export function DataGrid({
     rows.push(
       <tr
         key={rowIndex}
+        role="row"
+        // aria-rowindex is 1-based over the whole logical grid (header = 1), so it
+        // stays correct while windowing (ignite-data-grid contract).
+        aria-rowindex={rowIndex + 2}
         style={{ height: rowHeight }}
         className={cx("border-b border-gray-100", rowClassName?.(rowIndex))}
       >
-        {columns.map((col) => {
+        {columns.map((col, colIndex) => {
           const value = getCell(rowIndex, col.key);
           const message = cellMessage?.(rowIndex, col.key);
           const editing = edit?.rowIndex === rowIndex && edit.colKey === col.key;
@@ -79,6 +83,8 @@ export function DataGrid({
           return (
             <td
               key={col.key}
+              role="gridcell"
+              aria-colindex={colIndex + 1}
               className={cx("px-2 py-1 align-middle", cellClassName?.(rowIndex, col.key))}
               title={message}
             >
@@ -125,11 +131,17 @@ export function DataGrid({
       style={{ maxHeight: viewportHeight }}
       onScroll={(e) => setScrollTop(e.currentTarget.scrollTop)}
     >
-      <table className="w-full border-collapse text-left">
+      <table
+        role="grid"
+        aria-colcount={columns.length}
+        aria-rowcount={rowCount + 1}
+        aria-multiselectable={false}
+        className="ignite-data-grid-table w-full border-collapse text-left"
+      >
         <thead className="sticky top-0 z-10 bg-gray-50">
-          <tr className="text-xs uppercase tracking-wide text-gray-500">
-            {columns.map((c) => (
-              <th key={c.key} scope="col" className="px-2 py-2 font-semibold">
+          <tr role="row" aria-rowindex={1} className="text-xs uppercase tracking-wide text-gray-500">
+            {columns.map((c, i) => (
+              <th key={c.key} role="columnheader" aria-colindex={i + 1} scope="col" className="px-2 py-2 font-semibold">
                 {c.header}
               </th>
             ))}

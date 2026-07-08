@@ -54,7 +54,7 @@ async function renderPage() {
       <App />
     </SessionProvider>,
   );
-  await screen.findByRole("heading", { name: /assessment data/i });
+  await screen.findByRole("heading", { name: /upload a file/i });
 }
 
 beforeEach(() => {
