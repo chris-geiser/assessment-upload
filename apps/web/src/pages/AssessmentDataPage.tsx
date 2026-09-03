@@ -9,6 +9,8 @@ import { PeriodSelector } from "../features/upload/PeriodSelector.js";
 import { FilePreview } from "../features/upload/FilePreview.js";
 import { ColumnMappingForm } from "../features/upload/ColumnMappingForm.js";
 import { ValidationGrid } from "../features/upload/ValidationGrid.js";
+import { SubmitActionBar } from "../features/upload/SubmitActionBar.js";
+import { Btn, SecondaryBtn } from "../kit/index.js";
 import { UPLOAD_STEPS, useUploadFlow, type Stage } from "../features/upload/useUploadFlow.js";
 
 // Per-step page heading, mirroring the portal (h1 = the current step, e.g.
@@ -116,18 +118,41 @@ export function AssessmentDataPage() {
           mappedFields={flow.mappedFields}
           rowCount={flow.rows.length}
           summary={flow.validationSummary}
+          submittedCount={flow.submittedCount}
           allIssues={flow.allIssues}
           cellValueFor={flow.cellValueFor}
           editCell={flow.editCell}
           issuesForCell={flow.issuesForCell}
           rowSeverity={flow.rowSeverity}
           onBack={flow.goBack}
+          actionBar={
+            <SubmitActionBar
+              summary={flow.validationSummary}
+              submittedCount={flow.submittedCount}
+              pendingSubmittableCount={flow.pendingSubmittableCount}
+              totalRows={flow.rows.length}
+              onSubmit={flow.submit}
+            />
+          }
         />
       )}
 
       {flow.stage === "submit" && (
-        <div className="rounded-lg border border-gray-200 bg-white p-6 text-gray-600">
-          The <strong>{UPLOAD_STEPS[flow.stageIdx].label}</strong> step is implemented in a later phase.
+        <div className="rounded-lg border border-neutral-200 bg-white p-8 text-center">
+          <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-green-100 text-green-700">
+            <span aria-hidden="true" className="text-2xl">✓</span>
+          </div>
+          <h2 className="text-xl font-semibold text-brand-800">
+            {flow.submittedCount} row{flow.submittedCount === 1 ? "" : "s"} submitted successfully
+          </h2>
+          <p className="mx-auto mt-1 max-w-md text-neutral-600">
+            Your validated rows were sent for loading. In the full product you'd track pipeline
+            progress here and see this file in your upload history.
+          </p>
+          <div className="mt-6 flex justify-center gap-3">
+            <SecondaryBtn onClick={flow.reset}>Upload another file</SecondaryBtn>
+            <Btn onClick={flow.reset}>Done</Btn>
+          </div>
         </div>
       )}
 

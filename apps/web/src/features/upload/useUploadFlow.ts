@@ -111,6 +111,10 @@ export interface UploadFlow {
   mappedFields: string[];
   cellValueFor: (rowIndex: number, field: string) => string;
   editCell: (rowIndex: number, field: string, value: string) => void;
+  // Submit (demo, US4 slice)
+  submittedCount: number;
+  pendingSubmittableCount: number;
+  submit: () => void;
   goBack: () => void;
   goToStage: (stage: Stage) => void;
   reset: () => void;
@@ -213,6 +217,7 @@ export function useUploadFlow(opts: { schoolId?: string } = {}): UploadFlow {
       (byRow[issue.rowIndex] ??= []).push(issue);
     }
     setValidation({ issuesByRow: byRow, summary: result.summary });
+    setSubmittedIndexes([]);
     setStage("validate");
   }, [config, unmappedRequired, rows, effectiveMapping]);
 
@@ -268,6 +273,31 @@ export function useUploadFlow(opts: { schoolId?: string } = {}): UploadFlow {
       .flat()
       .sort((a, b) => a.rowIndex - b.rowIndex || a.field.localeCompare(b.field));
   }, [validation]);
+
+  // Submit tracking (demo slice of US4). Submittable = rows with no error; warnings
+  // may submit. Partial submit transmits only not-yet-submitted rows.
+  const [submittedIndexes, setSubmittedIndexes] = useState<number[]>([]);
+
+  const pendingSubmittable = useMemo(() => {
+    if (!validation) return [];
+    const done = new Set(submittedIndexes);
+    const out: number[] = [];
+    for (let i = 0; i < rows.length; i++) {
+      if (done.has(i)) continue;
+      if (rowSeverity(i) === "error") continue;
+      out.push(i);
+    }
+    return out;
+  }, [validation, submittedIndexes, rows.length, rowSeverity]);
+
+  const submit = useCallback(() => {
+    if (pendingSubmittable.length === 0) return;
+    const next = Array.from(new Set([...submittedIndexes, ...pendingSubmittable]));
+    setSubmittedIndexes(next);
+    // Fully submitted → advance to the completion screen; otherwise stay to fix the
+    // remaining error rows and resubmit.
+    if (next.length >= rows.length) setStage("submit");
+  }, [pendingSubmittable, submittedIndexes, rows.length]);
 
   const applyParsed = useCallback((parsed: ParsedFile, selectedFile: File) => {
     const det = detectAssessmentType(parsed.headers);
@@ -336,6 +366,7 @@ export function useUploadFlow(opts: { schoolId?: string } = {}): UploadFlow {
     setSheetPrompt(null);
     setOverrides({});
     setValidation(null);
+    setSubmittedIndexes([]);
     setError(null);
   }, []);
 
@@ -437,6 +468,9 @@ export function useUploadFlow(opts: { schoolId?: string } = {}): UploadFlow {
     mappedFields,
     cellValueFor,
     editCell,
+    submittedCount: submittedIndexes.length,
+    pendingSubmittableCount: pendingSubmittable.length,
+    submit,
     goBack,
     goToStage,
     reset,
