@@ -10,6 +10,8 @@ import { FilePreview } from "../features/upload/FilePreview.js";
 import { ColumnMappingForm } from "../features/upload/ColumnMappingForm.js";
 import { ValidationGrid } from "../features/upload/ValidationGrid.js";
 import { SubmitActionBar } from "../features/upload/SubmitActionBar.js";
+import { SampleFilePicker } from "../features/upload/SampleFilePicker.js";
+import { isDemoMode } from "../demo/isDemo.js";
 import { Btn, SecondaryBtn } from "../kit/index.js";
 import { UPLOAD_STEPS, useUploadFlow, type Stage } from "../features/upload/useUploadFlow.js";
 
@@ -76,7 +78,10 @@ export function AssessmentDataPage() {
           </div>
 
           {!flow.preview ? (
-            <UploadZone onFile={(f) => void flow.selectFile(f)} error={flow.error} />
+            <div className="space-y-4">
+              <UploadZone onFile={(f) => void flow.selectFile(f)} error={flow.error} />
+              {isDemoMode() && <SampleFilePicker onLoad={(f) => void flow.selectFile(f)} />}
+            </div>
           ) : (
             <FilePreview
               preview={flow.preview}
