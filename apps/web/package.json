@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite --port 5173",
     "build": "tsc --noEmit && vite build",
+    "build:pages": "vite build --base=/assessment-upload/",
     "preview": "vite preview --port 5173",
     "test": "vitest run",
     "test:watch": "vitest",
