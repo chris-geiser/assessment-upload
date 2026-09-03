@@ -48,7 +48,7 @@ function FieldRow({
   const value = effective[field.name] ?? NOT_PRESENT;
   const badge = confidenceBadge(field.name, mappingResult, effective);
   const options = [
-    { value: NOT_PRESENT, label: "Not Present" },
+    { value: NOT_PRESENT, label: "Not present" },
     ...headers.map((h) => ({ value: h, label: h })),
   ];
   return (
@@ -120,7 +120,7 @@ export function ColumnMappingForm({
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h2 className="text-lg font-semibold text-gray-900">Review column mapping</h2>
-        <SecondaryBtn onClick={onReset}>Reset to Auto-Mapped</SecondaryBtn>
+        <SecondaryBtn onClick={onReset}>Reset to auto-mapped</SecondaryBtn>
       </div>
 
       {error && (

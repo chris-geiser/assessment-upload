@@ -85,8 +85,7 @@ export function DataGrid({
               key={col.key}
               role="gridcell"
               aria-colindex={colIndex + 1}
-              className={cx("px-2 py-1 align-middle", cellClassName?.(rowIndex, col.key))}
-              title={message}
+              className={cx("group relative px-2 py-1 align-middle", cellClassName?.(rowIndex, col.key))}
             >
               {editing ? (
                 <input
@@ -116,7 +115,15 @@ export function DataGrid({
                   {value || " "}
                 </button>
               ) : (
-                <span className="block px-2 py-1 text-sm text-gray-800">{value || " "}</span>
+                <span className="block px-2 py-1 text-sm text-neutral-800">{value || " "}</span>
+              )}
+              {message && !editing && (
+                <span
+                  role="tooltip"
+                  className="pointer-events-none absolute left-2 top-full z-20 mt-1 hidden w-max max-w-xs rounded bg-neutral-900 px-2 py-1 text-xs text-white shadow-lg group-hover:block group-focus-within:block"
+                >
+                  {message}
+                </span>
               )}
             </td>
           );

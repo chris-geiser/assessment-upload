@@ -6,7 +6,7 @@ type ToastTone = "error" | "success" | "info";
 const TONES: Record<ToastTone, string> = {
   error: "border-red-300 bg-red-50 text-red-800",
   success: "border-green-300 bg-green-50 text-green-800",
-  info: "border-blue-300 bg-blue-50 text-blue-800",
+  info: "border-brand-200 bg-brand-100 text-brand-800",
 };
 
 export function Toast({

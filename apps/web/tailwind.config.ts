@@ -49,11 +49,16 @@ const config: Config = {
   content: ["./index.html", "./src/**/*.{ts,tsx}"],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ["Inter", "ui-sans-serif", "system-ui", "sans-serif"],
+      },
       colors: {
         brand: purple, // components use `brand`; remapping fixes every purple at once
         purple,
         pink,
         neutral,
+        // Any stray `gray-*` resolves to the neutral scale (no off-palette gray).
+        gray: { ...colors.gray, ...neutral },
         green,
         red,
         yellow,

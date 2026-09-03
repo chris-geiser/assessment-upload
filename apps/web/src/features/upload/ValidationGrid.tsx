@@ -99,10 +99,10 @@ export function ValidationGrid({
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div role="group" aria-label="Row filter" className="flex gap-2">
           <SecondaryBtn onClick={() => setFilter("all")} aria-pressed={filter === "all"}>
-            All Rows
+            All rows
           </SecondaryBtn>
           <SecondaryBtn onClick={() => setFilter("issues")} aria-pressed={filter === "issues"}>
-            Rows with Issues
+            Rows with issues
           </SecondaryBtn>
         </div>
         <SecondaryBtn onClick={() => downloadValidationReport(allIssues)} disabled={allIssues.length === 0}>

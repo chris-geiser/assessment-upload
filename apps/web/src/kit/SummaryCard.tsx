@@ -5,18 +5,18 @@ const TONE_TEXT: Record<BadgeTone, string> = {
   success: "text-green-800",
   warning: "text-yellow-800",
   error: "text-red-800",
-  processing: "text-blue-800",
-  superseded: "text-gray-700",
-  neutral: "text-gray-800",
+  processing: "text-brand-800",
+  superseded: "text-neutral-700",
+  neutral: "text-neutral-800",
 };
 
 const TONE_BORDER: Record<BadgeTone, string> = {
   success: "border-green-300",
   warning: "border-yellow-300",
   error: "border-red-300",
-  processing: "border-blue-300",
-  superseded: "border-gray-300",
-  neutral: "border-gray-200",
+  processing: "border-brand-200",
+  superseded: "border-neutral-300",
+  neutral: "border-neutral-200",
 };
 
 export function SummaryCard({

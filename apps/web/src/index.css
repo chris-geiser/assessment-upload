@@ -8,9 +8,9 @@
 
 body {
   margin: 0;
-  /* Matches the portal's --font-sans (system sans, no custom web font). */
+  /* Inter matches the portal typeface; system sans is the fallback. */
   font-family:
-    ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+    "Inter", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
   color: #3d3c3c; /* neutral-800 */
   background: #f5f5f5; /* surface */
 }
