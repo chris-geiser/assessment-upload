@@ -24,6 +24,14 @@ export function RoleSwitcher() {
           Prototype Controls
         </span>
         <span className="text-xs font-medium text-amber-900">Role Switcher</span>
+        <a
+          href="https://github.com/chris-geiser/assessment-upload/blob/main/PRD.md"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-xs font-medium text-amber-900 underline underline-offset-2 hover:text-amber-950"
+        >
+          View the PRD ↗
+        </a>
 
         <div className="ml-auto flex flex-wrap items-end gap-3">
           <Select
