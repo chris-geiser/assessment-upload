@@ -16,5 +16,9 @@ export default defineConfig({
     setupFiles: ["./src/test/setup.ts"],
     include: ["src/**/*.{test,spec}.{ts,tsx}"],
     css: false,
+    // Full-flow interaction tests (upload → map → validate → submit) drive many
+    // userEvent steps; give them room so they don't flake under parallel load.
+    testTimeout: 20000,
+    hookTimeout: 20000,
   },
 });
