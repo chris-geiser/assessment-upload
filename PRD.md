@@ -4,7 +4,7 @@
 
 **Scrum Team:** [TBD, likely Chihuahua or Moorhen (Platform program), or Démarche (Shared Services)]
 
-**Prototype:** https://chris-geiser.github.io/assessment-upload/ · **Code:** https://github.com/chris-geiser/assessment-upload
+**Prototype:** https://chris-geiser.github.io/assessment-upload/ · **Code:** https://github.com/chris-geiser/assessment-upload · **One-pager (read first):** [ONE-PAGER.md](ONE-PAGER.md) · **Engineering spec package:** [`specs/assessment-upload-mvp/`](specs/assessment-upload-mvp/) (constitution, spec, plan, data model, API contract, tasks; template in [docs/templates](docs/templates/engineering-spec-template.md))
 
 We built the P1 core of an assessment-upload flow (upload, detect, map, validate, fix inline) and it runs as a click-through prototype with 118 passing tests. The decision this document asks for: whether to build the remaining server pipeline, upload history, and replace/dedup (Phases 6 to 8), and whether to stand up a hosted backend so stakeholders exercise a real warehouse load or keep the browser-stubbed demo. This PRD fills the Ignite template; the data model and build status sit as subsections under Proposed Solution and User Stories because you asked for both.
 
